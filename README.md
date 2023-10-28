@@ -1,7 +1,9 @@
 Steps to setup and run locally:
 
-# npm install
-# npm start
+# 1. npm install
+# 2. npm start
+
+Go to localhost:1234 to see the web application.
 
 # Getting Started with Create React App
 
