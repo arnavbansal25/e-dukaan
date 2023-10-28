@@ -40,7 +40,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="flex flex-row w-full h-screen items-center">
+    <div className="flex flex-row w-full items-center">
       <div className="py-12 flex-1">
         <div className="flex bg-white rounded-lg shadow-2xl overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
           <div className="hidden lg:w-1/2 lg:flex justify-center items-center">

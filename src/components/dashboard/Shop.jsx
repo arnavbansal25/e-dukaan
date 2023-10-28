@@ -62,6 +62,36 @@ const Shop = () => {
     setModeIsAdd(false);
   };
 
+  const updateCount = (p, c) => {
+    let shopList = currUserInfo?.shops;
+    const shopInd = shopList?.findIndex((s) => s?.index === shopId);
+
+    let productList = shopList[shopInd]?.products;
+    const prodInd = productList?.findIndex((prod) => prod?.index === p?.index);
+
+    productList[prodInd] = {
+      ...productList[prodInd],
+      count: productList[prodInd]?.count + c,
+    };
+
+    if (productList[prodInd]?.count <= 0) {
+      toast.error("Error: Invalid Action!");
+      return;
+    }
+
+    shopList[shopInd] = {
+      ...shopList[shopInd],
+      products: productList,
+    };
+
+    currUserInfo.shops = shopList;
+
+    localStorage.setItem("recent-login", JSON.stringify(currUserInfo));
+
+    toast.success("Inventory updated successfully!");
+    setForceUpdate(!forceUpdate);
+  };
+
   return (
     <>
       {productModal && (
@@ -107,9 +137,19 @@ const Shop = () => {
                         ))}
                   </div>
                   <div className="w-10 flex justify-between gap-2 items-center">
-                    <span className="bg-red-300 py-1 px-2 rounded-lg">-</span>
+                    <span
+                      className="bg-red-300 py-1 px-2 rounded-lg cursor-pointer"
+                      onClick={() => updateCount(p, -1)}
+                    >
+                      -
+                    </span>
                     <span>{p?.count}</span>
-                    <span className="bg-green-300 py-1 px-2 rounded-lg">+</span>
+                    <span
+                      className="bg-green-300 py-1 px-2 rounded-lg cursor-pointer"
+                      onClick={() => updateCount(p, 1)}
+                    >
+                      +
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-start p-2">

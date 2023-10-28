@@ -6,5 +6,5 @@ export const productSchema = Yup.object().shape({
   price: Yup.number().required("Required!"),
   // tags: Yup.array().required("Required!"),
   availability: Yup.boolean().required("Required!"),
-  count: Yup.number().required("Required!"),
+  count: Yup.number().required("Required!").min(1, "Invalid Entry!"),
 });

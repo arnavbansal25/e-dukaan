@@ -121,7 +121,7 @@ const ProductModal = ({ productInfo, closeModal, modeIsAdd }) => {
               <label className={styles.label} htmlFor="count">
                 Stock
               </label>
-              <Field className={styles.field} id="count" name="count" />
+              <Field type="number" className={styles.field} id="count" name="count" />
               <ErrorMessage
                 component="a"
                 className={styles.errorMsg}
