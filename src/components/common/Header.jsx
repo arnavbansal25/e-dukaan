@@ -29,13 +29,12 @@ const Header = () => {
   }, []);
 
   const logOut = () => {
-    const users = localStorage.getItem("users");
-    const updatedUser = users.filter(u => u?.email === currUserInfo?.email);
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const userInd = users.findIndex((u) => u?.email === currUserInfo?.email);
 
+    users[userInd] = currUserInfo;
 
-
-    localStorage.setItem("users", [...users, ])
-
+    localStorage.setItem("users", JSON.stringify(users));
     localStorage.setItem("isLoggedIn", false);
     localStorage.setItem("recent-login", null);
     navigate("/login");
@@ -80,10 +79,10 @@ const Header = () => {
             {currUserInfo?.shops?.map((s) => (
               <div
                 key={s?.index}
-                className="pl-4 py-2 border-b-2 hover:bg-gray-300"
+                className="pl-4 py-2 border-b-2 hover:bg-gray-300 cursor-pointer"
                 style={{
                   backgroundColor:
-                    Number(shopId) === s?.index ? "rgb(209 213 219)" : "",
+                    shopId === s?.index ? "rgb(209 213 219)" : "",
                 }}
                 onClick={() => {
                   setIsMenuVisible(false);
@@ -93,7 +92,7 @@ const Header = () => {
                 <div>{s?.name}</div>
               </div>
             ))}
-            <div className="pl-4 mt-8" onClick={logOut}>
+            <div className="pl-4 mt-8 cursor-pointer" onClick={logOut}>
               Logout
             </div>
           </div>

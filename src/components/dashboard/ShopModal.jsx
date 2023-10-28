@@ -1,64 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import { styles } from "../utils/utils";
+import { styles, uid } from "../utils/utils";
 import { toast } from "react-toastify";
+import { shopSchema } from "../validation/shopSchema";
 
-const ShopModal = ({ closeModal }) => {
+const ShopModal = ({ shopInfo, closeModal, modeIsAdd }) => {
   const handleSaveShop = (values) => {
-    const currUser = JSON.parse(localStorage.getItem("recent-login"));
+    const currUserInfo = JSON.parse(localStorage.getItem("recent-login"));
 
-    const index = currUser?.shops ? currUser?.shops?.length + 1 : 1;
+    const index = uid();
 
-    localStorage.setItem(
-      "recent-login",
-      JSON.stringify({
-        ...currUser,
-        shops: currUser?.shops
-          ? [...currUser?.shops, { ...values, index }]
-          : [{ ...values, index }],
-      })
-    );
+    if (modeIsAdd) {
+      localStorage.setItem(
+        "recent-login",
+        JSON.stringify({
+          ...currUserInfo,
+          shops: currUserInfo?.shops
+            ? [...currUserInfo?.shops, { ...values, index }]
+            : [{ ...values, index }],
+        })
+      );
 
-    closeModal();
-    toast.success("Shop added successfully!");
+      closeModal();
+      toast.success("Shop added successfully!");
+    } else {
+      let shopList = currUserInfo?.shops;
+
+      const shopInd = shopList.findIndex((p) => p?.index === shopInfo?.index);
+
+      shopList[shopInd] = values;
+
+      currUserInfo.shops = shopList;
+
+      localStorage.setItem("recent-login", JSON.stringify(currUserInfo));
+
+      closeModal();
+      toast.success("Shop edited successfully!");
+    }
   };
-
-  const [lat, setLat] = useState("");
-  const [long, setLong] = useState("");
-
-  // useEffect(() => {
-  //   const location = window.navigator && window.navigator.geolocation;
-
-  //   if (location) {
-  //     location.getCurrentPosition(
-  //       (position) => {
-  //         setLat(position.coords.latitude.toString());
-  //         setLong(position.coords.longitude.toString());
-  //         console.log("ggg", position);
-  //       },
-  //       (error) => {
-  //         setLat("err-latitude");
-  //         setLong("err-longitude");
-  //       }
-  //     );
-  //   }
-  // }, []);
 
   return (
     <>
       <div className="absolute w-screen h-screen bg-slate-500 opacity-50"></div>
       <div className="absolute top-32 w-full flex justify-center">
         <div className="bg-gray-100 p-4 rounded-lg shadow-lg w-3/4">
-          <h3 className="text-xl text-center">Shop Details</h3>
+          <div className="flex justify-between">
+            <h3 className="text-xl text-center">Shop Details</h3>
+            <div className="cursor-pointer" onClick={() => closeModal()}>
+              X
+            </div>
+          </div>
           <Formik
-            initialValues={{
-              name: "a",
-              bio: "A",
-              address: "D",
-              lat: "1",
-              long: "2",
-            }}
-            // validationSchema={loginSchema}
+            initialValues={shopInfo}
+            validationSchema={shopSchema}
             onSubmit={handleSaveShop}
           >
             <Form>

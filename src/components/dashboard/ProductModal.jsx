@@ -1,38 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import { styles } from "../utils/utils";
+import { styles, uid } from "../utils/utils";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { productSchema } from "../validation/productSchema";
 
-const ProductModal = ({ productInfo, closeModal }) => {
+const ProductModal = ({ productInfo, closeModal, modeIsAdd }) => {
   const { shopId } = useParams();
 
-  const handleSaveShop = (values) => {
-    let currUser = JSON.parse(localStorage.getItem("recent-login"));
+  const handleSaveProduct = (values) => {
+    let currUserInfo = JSON.parse(localStorage.getItem("recent-login"));
 
-    const index = currUser?.shops?.[shopId]?.products
-      ? currUser?.shops?.[shopId]?.products?.length + 1
-      : 1;
+    const index = uid();
 
-    // const updatedShopProducts = currUser?.shops?.[shopId]?.products
-    //   ? [...currUser?.shops?.[shopId]?.products, values]
-    //   : [values];
+    let shopList = currUserInfo?.shops;
+    const shopInd = shopList?.findIndex((s) => s?.index === shopId);
 
-    let shopInView = currUser?.shops?.[shopId];
-    shopInView = {
-      ...shopInView,
-      products: shopInView?.products
-        ? [...shopInView?.products, { ...values, index }]
-        : [{ ...values, index }],
-    };
+    if (modeIsAdd) {
+      shopList[shopInd] = {
+        ...shopList[shopInd],
+        products: shopList[shopInd]?.products
+          ? [...shopList[shopInd]?.products, { ...values, index }]
+          : [{ ...values, index }],
+      };
 
-    currUser.shops[shopId] = shopInView;
+      currUserInfo.shops = shopList;
+      localStorage.setItem("recent-login", JSON.stringify(currUserInfo));
 
-    console.log("bbb", currUser);
-    localStorage.setItem("recent-login", JSON.stringify(currUser));
+      closeModal();
+      toast.success("Product added successfully!");
+    } else {
+      let productList = shopList[shopInd]?.products;
 
-    closeModal();
-    toast.success("Product added successfully!");
+      const productInd = productList.findIndex(
+        (p) => p?.index === productInfo?.index
+      );
+      productList[productInd] = values;
+
+      shopList[shopInd] = {
+        ...shopList[shopInd],
+        products: productList,
+      };
+
+      currUserInfo.shops = shopList;
+
+      localStorage.setItem("recent-login", JSON.stringify(currUserInfo));
+
+      closeModal();
+      toast.success("Product updated successfully!");
+    }
   };
 
   return (
@@ -40,11 +56,16 @@ const ProductModal = ({ productInfo, closeModal }) => {
       <div className="absolute w-screen h-screen bg-slate-500 opacity-50"></div>
       <div className="absolute top-32 w-full flex justify-center">
         <div className="bg-gray-100 p-4 rounded-lg shadow-lg w-3/4">
-          <h3 className="text-xl text-center">Product Details</h3>
+          <div className="flex justify-between">
+            <h3 className="text-xl text-center">Product Details</h3>
+            <div className="cursor-pointer" onClick={() => closeModal()}>
+              X
+            </div>
+          </div>
           <Formik
             initialValues={productInfo}
-            // validationSchema={loginSchema}
-            onSubmit={handleSaveShop}
+            validationSchema={productSchema}
+            onSubmit={handleSaveProduct}
           >
             <Form>
               <label className={styles.label} htmlFor="name">

@@ -19,5 +19,10 @@ const combinations = [
   { color: "#ADD8E6", text: "#00008B" },
   { color: "#2BAE66", text: "#FCF6F5" },
 ];
+
 export const generateRandomAvatar = () =>
   combinations[Math.floor(Math.random() * 10)];
+
+export const uid = function () {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+};

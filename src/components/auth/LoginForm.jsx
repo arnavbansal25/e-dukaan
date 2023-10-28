@@ -13,6 +13,14 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    }
+  }, [isLoggedIn]);
+
   const handleLogin = ({ email_phone, password }) => {
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const userInfo = users?.filter(

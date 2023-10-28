@@ -9,7 +9,6 @@ const cartSlice = createSlice({
 
   reducers: {
     setCurrUser: (state, action) => {
-      console.log("ggg", action)
       state.isLoggedIn = true;
       Object.assign(state.info, { ...state.info, ...action.payload });
     },

@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { logo } from "../../assets";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import { logo } from "../../assets";
 import { setCurrUser } from "../../redux/slices/userSlice";
 
 const Home = () => {
@@ -25,7 +26,7 @@ const Home = () => {
       <div className="text-xl">E-Dukaan Website Information...</div>
       <div
         onClick={() => navigate("/login")}
-        className="text-center text-white px-4 py-2 rounded-lg text-2xl bg-gray-700"
+        className="cursor-pointer text-center text-white px-4 py-2 rounded-lg text-2xl bg-gray-700"
       >
         Login
       </div>
